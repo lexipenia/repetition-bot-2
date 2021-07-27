@@ -1,0 +1,9 @@
+.DS_Store
+chromedriver_mac
+chromedriver_linux
+config.py
+__pycache__/config.cpython-39.pyc
+__pycache__/invisibles.cpython-39.pyc
+debug/
+chrome/
+get-started-xpaths
