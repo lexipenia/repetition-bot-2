@@ -39,11 +39,11 @@ class Bot:
             options = Options()
             options.add_argument("--no-sandbox")
             options.add_argument("--remote-debugging-port=9222") # https://stackoverflow.com/a/56638103/13100363
-            options.add_argument("--headless")
+            #options.add_argument("--headless")
             options.add_argument("user-data-dir=" +  path_extension + "chrome/")    # stay logged in
             options.add_argument("--disable-popup-blocking")
             options.add_argument("--disable-dev-shm-usage")
-            #options.add_argument("--auto-open-devtools-for-tabs")
+            options.add_argument("--auto-open-devtools-for-tabs")
             self.driver = webdriver.Chrome("/usr/local/bin/chromedriver", options=options)
             self.driver.implicitly_wait(10)
             self.driver.get("https://twitter.com/")
@@ -117,14 +117,21 @@ class Bot:
         self.driver.get_screenshot_as_file(path_extension + "debug/" + run_ID + "-screenshot-post.png")
         with open(path_extension + "debug/" + run_ID + "-source-post.html", "w") as f:
                 f.write(self.driver.page_source)
-
-        tweet_box = self.driver.find_element_by_xpath("//*[@id=\"react-root\"]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div[2]/div")
+    
+        tweet_box = self.driver.find_element_by_xpath("//*[@id=\"react-root\"]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div[2]/div")
         tweet_box.send_keys(generateTweetText())
         tweet_button = self.driver.find_element_by_xpath("//*[@id=\"react-root\"]/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div/div[2]/div[3]")
         tweet_button.click()
         print("Tweet sent successfully.")
         self.driver.quit()
         deleteFiles()           # only delete if the tweet was send successfully!
+    
+    # click the accept conditions button that Twitter sometimes displays
+    def acceptConditions(self):
+        print("Trying to click terms button…")
+        button = self.driver.find_element_by_xpath("//*[@id=\"react-root\"]/div/div/div/main/div/div/div[2]/div[2]")
+        button.click()
+        print("Button clicked.")
             
 # generate the tweet text, containing a novel invisible string each time
 # this must be inserted in the middle, since Twitter trims invisibles from the end before posting
@@ -160,6 +167,13 @@ def run():
     print("---\nRunning repetition-bot-2.py at",str(datetime.now()),"| Run ID:",run_ID,"| Params:",argv[1:])
 
     bot = Bot()                 # create bot set to twitter.com
+
+
+    try:                        # check / try the button
+        bot.acceptConditions()
+    except:
+        print("Conditions didn't need to be accepted this time.")
+
 
     try:                        # just assume we are logged in and can post a tweet
 
