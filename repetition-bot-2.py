@@ -22,8 +22,8 @@ else:
 
 # make sure folders are in place
 folders = [
-    path_extension + "debug/",
-    path_extension + "chrome/"
+    path_extension + "debug/",          # for saving debug screenshots
+    path_extension + "chrome/"          # for saving chrome login – skip repeated logins
 ]
 for folder in folders:
     if not path.isdir(folder):
@@ -39,7 +39,7 @@ class Bot:
             options = Options()
             options.add_argument("--no-sandbox")
             options.add_argument("--remote-debugging-port=9222") # https://stackoverflow.com/a/56638103/13100363
-            #options.add_argument("--headless")
+            options.add_argument("--headless")
             options.add_argument("user-data-dir=" +  path_extension + "chrome/")    # stay logged in
             options.add_argument("--disable-popup-blocking")
             options.add_argument("--disable-dev-shm-usage")
@@ -56,7 +56,7 @@ class Bot:
     def login(self,identity,password):
         print("Logging in to Twitter…")
 
-        # wait then take screenshot and save source for debugging
+        # wait then take screenshot and save source for debugging (deleted later if run was successful)
         sleep(1)
         self.driver.get_screenshot_as_file(path_extension + "debug/" + run_ID + "-screenshot-login.png")
         with open(path_extension + "debug/" + run_ID + "-source-login.html", "w") as f:
@@ -94,7 +94,7 @@ class Bot:
                 print("”Get started” login sent.")
             
             # changing IP can cause a 4-step version with phone credential to be triggered
-            # but it is not worth time trying to navigate it now, it shouldn't appear normally (?)
+            # but it is not worth time trying to navigate it, it shouldn't appear normally (?)
             # CAPTCHA step will totally defeat the bot, but normal use shouldn't trigger it (?)
 
         except Exception as e:
@@ -102,7 +102,7 @@ class Bot:
             self.driver.quit()
             exit()
 
-    # send the phone number for the addititional "suspicious activity" screen; handle exception in run()
+    # send the phone number for the additional "suspicious activity" screen; handle exception in run()
     def sendPhoneCredential(self):
         phone_field = self.driver.find_element_by_xpath("//*[@id=\"challenge_response\"]")
         phone_field.send_keys(phone, Keys.ENTER)

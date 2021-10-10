@@ -2,12 +2,7 @@
 
 An updated version of the [original repetition-bot](https://github.com/lexipenia/repetition-bot) that bypasses the Twitter API and instead uses Selenium to control an automated Chrome instance. This may prove more resilient against Twitter's attempts to block people posting the same thing again and again.
 
-The bot is able to navigate a couple of Twitter's login flows fairly well:
-* Standard login
-* "Get started" login that seems to appear at random, including 2-, 3- and 4-step versions
-* "Account security" follow-up requests after first login succeeds
-
-By making the bot save Chrome user preferences, however, it should avoid having recourse to using these flows frequently. The "get started" flow proves especially resistent to automation and may only work on my local machine.
+By making the bot save Chrome user preferences, it can stay logged in and not have to navigate the various Twitter login flows – although it does make a noble attempt at getting through them if challenged.
 
 ## `config.py` and `chromedriver` location
 
@@ -17,7 +12,7 @@ A `config.py` file in the same directory as the bot must be supplied, containing
 * The root of the path where `/chrome` and `/debug` directories will be created
 * The desired Twitter login credentials
 
-Example:
+Example `config.py` file:
 ```
 # choose how to extend the path for saving files (remote = absolute, for cronjob)
 path_extensions = {
