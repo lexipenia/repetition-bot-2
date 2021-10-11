@@ -124,7 +124,7 @@ class Bot:
         tweet_button.click()
         print("Tweet sent successfully.")
         self.driver.quit()
-        deleteFiles()           # only delete if the tweet was send successfully!
+        deleteFiles()           # only delete if the tweet was sent successfully!
     
     # click the accept conditions button that Twitter sometimes displays
     def acceptConditions(self):
